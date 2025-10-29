@@ -43,8 +43,8 @@
       min-height: 100vh;
       padding: 16px;
       /* Your New Background Images */
-      background-image: 
-        url(''), 
+      background-image:
+        url(''),
         url(''),
         url('');
       background-repeat: no-repeat, no-repeat, no-repeat;
@@ -78,7 +78,7 @@
     .chat-header img { width: 40px; height: 40px; border-radius: 50%; }
     .header-title h1 { font-size: 18px; margin: 0; font-weight: 700; line-height: 1.2; }
     .header-title p { font-size: 13px; margin: 0; opacity: 0.8; }
-    
+
     .progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.2); }
     .progress-bar-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.4s ease; }
 
@@ -130,7 +130,7 @@
       font-weight: 500;
       align-self: flex-start;
     }
-    
+
     .hidden-bubble {
       opacity: 0;
       transform: scale(0.8);
@@ -192,7 +192,7 @@
     }
     .btn-send:hover { background: #0056b3; }
     .btn-send svg { width: 24px; height: 24px; }
-    
+
     .choice-buttons {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -210,11 +210,26 @@
     }
     .choice-btn:hover { border-color: var(--action-primary); background: #f0f7ff; }
 
+    /* --- MODIFICATION START --- */
+    /* Main container for the rating buttons */
     .rating-emoji-buttons {
       display: flex;
       justify-content: space-around;
-      gap: 8px;
+      align-items: flex-start;
+      padding-top: 8px;
     }
+
+    /* Wrapper for each emoji button and its label */
+    .rating-item-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px; /* Space between button and text */
+      flex: 1 1 0; /* Allow items to grow and shrink evenly */
+      min-width: 60px;
+    }
+
+    /* The emoji button itself */
     .rating-emoji-btn {
         width: 48px; height: 48px;
         font-size: 24px;
@@ -225,9 +240,11 @@
         transition: var(--transition);
         display: grid;
         place-items: center;
-        position: relative;
     }
-    .rating-emoji-btn:hover { transform: scale(1.1); border-color: var(--action-primary); }
+    .rating-emoji-btn:hover {
+        transform: scale(1.1);
+        border-color: var(--action-primary);
+    }
     .rating-emoji-btn.selected {
       background-color: var(--action-primary);
       border-color: var(--action-primary);
@@ -235,25 +252,22 @@
       transform: scale(1.1);
       box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
     }
+
+    /* The text label underneath the button */
+    .rating-label {
+      font-size: 12px;
+      color: #495057;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* Hide the old tooltip class as it's no longer needed */
     .rating-tooltip {
-        position: absolute;
-        top: -35px;
-        background-color: #333;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 500;
-        white-space: nowrap;
-        opacity: 0;
-        transform: translateY(5px);
-        transition: all 0.2s ease;
-        pointer-events: none;
+      display: none;
     }
-    .rating-emoji-btn:hover .rating-tooltip {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* --- MODIFICATION END --- */
+
   </style>
 </head>
 <body>
@@ -266,11 +280,11 @@
       </div>
     </header>
     <div class="progress-bar"><div class="progress-bar-fill" id="progress-bar"></div></div>
-    
+
     <div class="chat-log" id="chat-log">
       <!-- Chat bubbles will be added here by JavaScript -->
     </div>
-    
+
     <div class="chat-input-area" id="input-area">
       <!-- Input fields will be managed here by JavaScript -->
     </div>
@@ -287,9 +301,9 @@
       let currentFormType = 'nursery_g2';
       let questionQueue = [];
       const formData = {};
-      
+
       const translations = {};
-      
+
       let currentSectionId = 0;
 
       // --- TRANSLATIONS DATABASE ---
@@ -372,10 +386,10 @@
             s8_title: {type: 'info', text: "--- ಒಟ್ಟಾರೆ ತೃಪ್ತಿ ---"}, s8_satisfaction: { type: 'rating_1_10', text: "ನೀವು ಒಟ್ಟಾರೆಯಾಗಿ ಶಾಲೆಯ ಬಗ್ಗೆ ಎಷ್ಟು ತೃಪ್ತರಾಗಿದ್ದೀರಿ? (1=ಕಡಿಮೆ, 10=ಹೆಚ್ಚು)" }, s8_suggestion: { type: 'text', text: "ಅಂತಿಮ ಸಲಹೆ ಪೆಟ್ಟಿಗೆ:", placeholder: "ನಿಮ್ಮ ಸಲಹೆಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ..." },
             end: { type: 'info', text: "ನಿಮ್ಮ ಅಮೂಲ್ಯವಾದ ಪ್ರತಿಕ್ರಿಯೆಗಾಗಿ ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ಸಲ್ಲಿಕೆ ಪೂರ್ಣಗೊಂಡಿದೆ. ✅" }
         };
-        
+
         translations.nursery_g2 = { en: en_nursery_g2, te: te_nursery_g2, hi: hi_nursery_g2, kn: kn_nursery_g2 };
       };
-      
+
       const questionFlow_nursery_g2 = ['description', 's1_title', 's1_studentName', 's1_parentName', 's1_mobile', 's2_title', 's2_clarity', 's2_progress', 's2_punctuality', 's2_attention', 's2_correction', 's2_discipline', 's2_friendly', 's2_comment', 's3_title', 's3_english', 's3_math', 's3_evs', 's3_rhymes', 's3_telugu', 's3_computer', 's3_art', 's3_pt', 's3_music', 's3_comment', 's4_title', 's4_response', 's4_observation', 's4_safety', 's4_improvement', 's4_discipline', 's4_comment', 's5_title', 's5_discipline', 's5_management', 's5_communication', 's5_safety', 's5_visibility', 's5_comment', 's6_title', 's6_cleanliness', 's6_classroom', 's6_water', 's6_food', 's6_play', 's7_title', 's7_diary', 's7_meetings', 's7_circulars', 's7_clarity', 's7_comment', 's8_title', 's8_satisfaction', 's8_suggestion', 'end'];
 
 
@@ -398,7 +412,7 @@
             bubble.classList.add('hidden-bubble');
           });
       };
-      
+
       const showTypingIndicator = () => {
         const indicator = document.createElement('div');
         indicator.className = 'typing-indicator';
@@ -407,16 +421,16 @@
         chatLog.scrollTop = chatLog.scrollHeight;
         return indicator;
       }
-      
+
       const processStep = () => {
         if (questionQueue.length === 0) return;
-        
+
         const key = questionQueue[0];
         const indicator = showTypingIndicator();
 
         setTimeout(() => {
             chatLog.removeChild(indicator);
-            
+
             if (key === 'langSelect') {
                 addBubble(translations.common.langSelect.text, 'school', 'langSelect');
                 renderLanguageSelection();
@@ -428,7 +442,7 @@
                 renderGradeSelection();
                 return;
             }
-            
+
             const stepData = translations[currentFormType][selectedLang][key];
 
             const sectionIdNum = parseInt(key.substring(1,2), 10);
@@ -438,22 +452,22 @@
             }
 
             addBubble(stepData.text, stepData.type === 'info' ? 'info' : 'school', key);
-            
+
             if (stepData.type === 'info') {
                 questionQueue.shift();
                 setTimeout(processStep, 1000);
                 return;
             }
-            
+
             renderInput(stepData);
         }, 1200);
       };
-      
+
       const renderLanguageSelection = () => {
           inputArea.innerHTML = '';
           const buttonsContainer = document.createElement('div');
           buttonsContainer.className = 'choice-buttons';
-          
+
           const languages = [
               { code: 'en', name: 'English' }, { code: 'te', name: 'తెలుగు Telugu' },
               { code: 'hi', name: 'हिन्दी Hindi' }, { code: 'kn', name: 'ಕನ್ನಡ Kannada' }
@@ -477,7 +491,7 @@
           const buttonsContainer = document.createElement('div');
           buttonsContainer.className = 'choice-buttons';
           const options = translations.common.gradeSelect[selectedLang].options;
-          
+
           options.forEach(option => {
               const button = document.createElement('button');
               button.className = 'choice-btn';
@@ -490,7 +504,7 @@
 
       const renderInput = (stepData) => {
         inputArea.innerHTML = '';
-        
+
         if (stepData.type === 'text') {
             const wrapper = document.createElement('div');
             wrapper.className = 'input-wrapper';
@@ -500,15 +514,15 @@
             input.type = (currentKey === 's1_mobile') ? 'tel' : 'text';
             input.className = 'form-control';
             input.placeholder = stepData.placeholder;
-            
+
             const button = document.createElement('button');
             button.className = 'btn-send';
             button.innerHTML = `<svg fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`;
-            
+
             wrapper.appendChild(input); wrapper.appendChild(button);
             inputArea.appendChild(wrapper);
             input.focus();
-            
+
             const submit = () => {
                 const value = input.value.trim();
                 if (currentKey === 's1_mobile') {
@@ -530,20 +544,39 @@
             input.onkeydown = (e) => { if (e.key === 'Enter') submit(); };
 
         } else if (stepData.type === 'rating_1_5') {
+            // --- MODIFICATION START ---
             const buttonsContainer = document.createElement('div');
             buttonsContainer.className = 'rating-emoji-buttons';
             const emojis = translations.common.ratingEmojis;
-            
+
             for(let i = 1; i <= 5; i++) {
+                // Create a wrapper for each emoji and its text
+                const itemWrapper = document.createElement('div');
+                itemWrapper.className = 'rating-item-wrapper';
+
                 const button = document.createElement('button');
                 button.className = 'rating-emoji-btn';
-                button.innerHTML = `${emojis[i]}<div class="rating-tooltip">${translations.common.ratingTooltips[selectedLang][i]}</div>`;
+                button.innerHTML = emojis[i]; // The emoji itself
+
                 button.onclick = () => {
-                    handleAnswer(questionQueue[0], emojis[i], i);
+                    // Add the 'selected' class for a brief visual flash
+                    button.classList.add('selected');
+                    // Proceed to the next step after a short delay
+                    setTimeout(() => {
+                        handleAnswer(questionQueue[0], emojis[i], i);
+                    }, 250);
                 };
-                buttonsContainer.appendChild(button);
+
+                const label = document.createElement('span');
+                label.className = 'rating-label';
+                label.textContent = translations.common.ratingTooltips[selectedLang][i];
+
+                itemWrapper.appendChild(button);
+                itemWrapper.appendChild(label);
+                buttonsContainer.appendChild(itemWrapper);
             }
             inputArea.appendChild(buttonsContainer);
+            // --- MODIFICATION END ---
         } else if (stepData.type === 'rating_1_10') {
              const buttonsContainer = document.createElement('div');
             buttonsContainer.className = 'choice-buttons';
@@ -561,7 +594,7 @@
       const handleAnswer = (key, textValue, numericValue) => {
           const errorBubble = document.querySelector('.bubble-error');
           if (errorBubble) errorBubble.remove();
-          
+
           addBubble(textValue, 'user', key);
           formData[key] = numericValue || textValue;
           inputArea.innerHTML = '';
@@ -572,12 +605,12 @@
             questionQueue = [...questionFlow_nursery_g2];
             headerTitle.children[1].textContent = `${translations[currentFormType][selectedLang].title}`;
           }
-          
+
           const totalQuestionsInFlow = questionFlow_nursery_g2.length;
           const questionsLeft = questionQueue.length;
           const completedQuestions = totalQuestionsInFlow - questionsLeft;
           progressBar.style.width = totalQuestionsInFlow > 0 ? `${(completedQuestions / totalQuestionsInFlow) * 100}%` : '0%';
-          
+
           setTimeout(processStep, 500);
       }
 

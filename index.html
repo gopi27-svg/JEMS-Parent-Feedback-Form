@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parent Feedback – Jain English Medium School</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-primary: #0a2569;
+      --action-primary: #007bff;
+      --text-primary: #212529;
+      --text-light: #ffffff;
+      --bg-body: #e9ecef;
+      --bg-chat: #ffffff;
+      --bubble-school: #f1f3f5;
+      --bubble-user: #007bff;
+      --radius: 20px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes typing {
+        0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Roboto", sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 450px;
+      height: 90vh;
+      max-height: 700px;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-chat);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      padding: 16px;
+      background: var(--brand-primary);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .chat-header img { width: 40px; height: 40px; border-radius: 50%; }
+    .header-title h1 { font-size: 18px; margin: 0; font-weight: 700; }
+    .header-title p { font-size: 13px; margin: 0; opacity: 0.8; }
+    
+    .progress-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.2); }
+    .progress-bar-fill { width: 0%; height: 100%; background: #ffffff; transition: width 0.4s ease; }
+
+    .chat-log {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      animation: fadeIn 0.4s;
+      line-height: 1.5;
+    }
+    .bubble-school {
+      background: var(--bubble-school);
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+    }
+    .bubble-user {
+      background: var(--bubble-user);
+      color: var(--text-light);
+      border-bottom-right-radius: 4px;
+      align-self: flex-end;
+      font-weight: 500;
+    }
+    
+    .typing-indicator {
+        display: flex; gap: 4px; align-items: center;
+        padding: 12px 16px;
+        background: var(--bubble-school);
+        border-radius: var(--radius);
+        border-bottom-left-radius: 4px;
+        align-self: flex-start;
+    }
+    .typing-indicator span {
+        width: 8px; height: 8px; background-color: #adb5bd;
+        border-radius: 50%; animation: typing 1s infinite;
+    }
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+    .chat-input-area {
+      padding: 16px;
+      background: var(--bg-chat);
+      border-top: 1px solid #dee2e6;
+      flex-shrink: 0;
+    }
+    .input-wrapper { display: flex; gap: 10px; }
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ced4da;
+      border-radius: 99px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      transition: var(--transition);
+    }
+    .form-control:focus {
+      border-color: var(--action-primary);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    }
+    .btn-send {
+      border: none;
+      background: var(--action-primary);
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .btn-send:hover { background: #0056b3; }
+    .btn-send svg { width: 24px; height: 24px; }
+    
+    .choice-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .choice-btn {
+        padding: 12px 8px;
+        font-size: 16px;
+        font-weight: 700;
+        border: 1px solid #ced4da;
+        border-radius: 12px;
+        background: white;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    .choice-btn:hover { border-color: var(--action-primary); background: #f0f7ff; }
+
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <header class="chat-header">
+      <img src="https://i.postimg.cc/pXSmVHBN/unnamed.jpg" alt="School Logo" />
+      <div class="header-title">
+        <h1>Jain English Medium School</h1>
+        <p>Parent Feedback Form</p>
+      </div>
+    </header>
+    <div class="progress-bar"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    
+    <div class="chat-log" id="chat-log">
+      <!-- Chat bubbles will be added here by JavaScript -->
+    </div>
+    
+    <div class="chat-input-area" id="input-area">
+      <!-- Input fields will be managed here by JavaScript -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatLog = document.getElementById('chat-log');
+      const inputArea = document.getElementById('input-area');
+      const progressBar = document.getElementById('progress-bar');
+      let currentStep = 0;
+      let selectedLang = '';
+      const formData = {};
+
+      const translations = {
+        // English Translations
+        en: {
+          welcome: { type: 'info', text: "Hello! Welcome to the JEMS parent feedback form. We'll ask a few simple questions." },
+          studentName: { type: 'text', text: "First, what is your child's full name?", placeholder: "Type your answer..." },
+          class: { type: 'text', text: "Which class and section is your child in?", placeholder: "e.g., Grade 6 - B" },
+          parentName: { type: 'text', text: "Great. And what is your full name?", placeholder: "Type your answer..." },
+          q_knowledge: { type: 'rating', text: "How would you rate the teacher's knowledge of the subject?", options: ['Poor', 'Average', 'Good', 'Excellent'] },
+          q_clarity: { type: 'rating', text: "How well does the teacher explain topics?", options: ['Poorly', 'Average', 'Well', 'Very Well'] },
+          q_overall: { type: 'rating', text: "Overall, how satisfied are you with the school?", options: ['Not Satisfied', 'Somewhat Satisfied', 'Satisfied', 'Very Satisfied'] },
+          improve: { type: 'text', text: "Finally, do you have any suggestions for us?", placeholder: "Type your suggestions..." },
+          end: { type: 'info', text: "Thank you for your valuable feedback! Your submission is complete. ✅" }
+        },
+        // Telugu Translations
+        te: {
+          welcome: { type: 'info', text: "నమస్కారం! JEMS తల్లిదండ్రుల ఫీడ్‌బ్యాక్ ఫారమ్‌కు స్వాగతం. మేము కొన్ని సాధారణ ప్రశ్నలు అడుగుతాము." },
+          studentName: { type: 'text', text: "ముందుగా, మీ పిల్లల పూర్తి పేరు ఏమిటి?", placeholder: "మీ సమాధానం టైప్ చేయండి..." },
+          class: { type: 'text', text: "మీ పిల్లలు ఏ తరగతి మరియు సెక్షన్‌లో ఉన్నారు?", placeholder: "ఉదా., 6వ తరగతి - B" },
+          parentName: { type: 'text', text: "చాలా మంచిది. మరి మీ పూర్తి పేరు ఏమిటి?", placeholder: "మీ సమాధానం టైప్ చేయండి..." },
+          q_knowledge: { type: 'rating', text: "ఉపాధ్యాయుని సబ్జెక్ట్ నాలెడ్జ్‌ను మీరు ఎలా రేట్ చేస్తారు?", options: ['తక్కువ', 'సాధారణం', 'మంచిది', 'అద్భుతం'] },
+          q_clarity: { type: 'rating', text: "ఉపాధ్యాయుడు పాఠ్యాంశాలను ఎంత బాగా వివరిస్తారు?", options: ['సరిగ్గా లేదు', 'సాధారణం', 'బాగా', 'చాలా బాగా'] },
+          q_overall: { type: 'rating', text: "మొత్తంమీద, మీరు పాఠశాలతో ఎంత సంతృప్తిగా ఉన్నారు?", options: ['సంతృప్తి లేదు', 'కొంత సంతృప్తి', 'సంతృప్తి', 'చాలా సంతృప్తి'] },
+          improve: { type: 'text', text: "చివరగా, మా కోసం మీకు ఏమైనా సూచనలు ఉన్నాయా?", placeholder: "మీ సూచనలను టైప్ చేయండి..." },
+          end: { type: 'info', text: "మీ విలువైన అభిప్రాయానికి ధన్యవాదాలు! మీ సమర్పణ పూర్తయింది. ✅" }
+        },
+        // Hindi Translations
+        hi: {
+          welcome: { type: 'info', text: "नमस्ते! JEMS अभिभावक फीडबैक फॉर्म में आपका स्वागत है। हम कुछ सरल प्रश्न पूछेंगे।" },
+          studentName: { type: 'text', text: "सबसे पहले, आपके बच्चे का पूरा नाम क्या है?", placeholder: "अपना उत्तर टाइप करें..." },
+          class: { type: 'text', text: "आपका बच्चा किस कक्षा और सेक्शन में है?", placeholder: "उदा., कक्षा 6 - B" },
+          parentName: { type: 'text', text: "बहुत अच्छा। और आपका पूरा नाम क्या है?", placeholder: "अपना उत्तर टाइप करें..." },
+          q_knowledge: { type: 'rating', text: "आप शिक्षक के विषय ज्ञान को कैसे रेट करेंगे?", options: ['खराब', 'औसत', 'अच्छा', 'उत्कृष्ट'] },
+          q_clarity: { type: 'rating', text: "शिक्षक विषयों को कितनी अच्छी तरह समझाते हैं?", options: ['खराब', 'औसत', 'अच्छी तरह', 'बहुत अच्छी तरह'] },
+          q_overall: { type: 'rating', text: "कुल मिलाकर, आप स्कूल से कितने संतुष्ट हैं?", options: ['संतुष्ट नहीं', 'कुछ हद तक संतुष्ट', 'संतुष्ट', 'बहुत संतुष्ट'] },
+          improve: { type: 'text', text: "अंत में, क्या आपके पास हमारे लिए कोई सुझाव है?", placeholder: "अपने सुझाव टाइप करें..." },
+          end: { type: 'info', text: "आपकी बहुमूल्य प्रतिक्रिया के लिए धन्यवाद! आपका सबमिशन पूरा हो गया है। ✅" }
+        },
+        // Kannada Translations
+        kn: {
+          welcome: { type: 'info', text: "ನಮಸ್ಕಾರ! JEMS ಪೋಷಕರ ಪ್ರತಿಕ್ರಿಯೆ ಫಾರ್ಮ್‌ಗೆ ಸ್ವಾಗತ. ನಾವು ಕೆಲವು ಸರಳ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳುತ್ತೇವೆ." },
+          studentName: { type: 'text', text: "ಮೊದಲನೆಯದಾಗಿ, ನಿಮ್ಮ ಮಗುವಿನ ಪೂರ್ಣ ಹೆಸರೇನು?", placeholder: "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ..." },
+          class: { type: 'text', text: "ನಿಮ್ಮ ಮಗು ಯಾವ ತರಗತಿ ಮತ್ತು ವಿಭಾಗದಲ್ಲಿದೆ?", placeholder: "ಉದಾ., 6 ನೇ ತರಗತಿ - B" },
+          parentName: { type: 'text', text: "ತುಂಬಾ ಒಳ್ಳೆಯದು. ಮತ್ತು ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರೇನು?", placeholder: "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ..." },
+          q_knowledge: { type: 'rating', text: "ಶಿಕ್ಷಕರ ವಿಷಯ ಜ್ಞಾನವನ್ನು ನೀವು ಹೇಗೆ ರೇಟ್ ಮಾಡುತ್ತೀರಿ?", options: ['ಕಳಪೆ', 'ಸರಾಸರಿ', 'ಒಳ್ಳೆಯದು', 'ಅತ್ಯುತ್ತಮ'] },
+          q_clarity: { type: 'rating', text: "ಶಿಕ್ಷಕರು ವಿಷಯಗಳನ್ನು ಎಷ್ಟು ಚೆನ್ನಾಗಿ ವಿವರಿಸುತ್ತಾರೆ?", options: ['ಕಳಪೆಯಾಗಿ', 'ಸರಾಸರಿ', 'ಚೆನ್ನಾಗಿ', 'ತುಂಬಾ ಚೆನ್ನಾಗಿ'] },
+          q_overall: { type: 'rating', text: "ಒಟ್ಟಾರೆಯಾಗಿ, ನೀವು ಶಾಲೆಯ ಬಗ್ಗೆ ಎಷ್ಟು ತೃಪ್ತರಾಗಿದ್ದೀರಿ?", options: ['ತೃಪ್ತಿ ಇಲ್ಲ', 'ಸ್ವಲ್ಪ ತೃಪ್ತಿ', 'ತೃಪ್ತಿ', 'ತುಂಬಾ ತೃಪ್ತಿ'] },
+          improve: { type: 'text', text: "ಕೊನೆಯದಾಗಿ, ನಮ್ಮಗಾಗಿ ನಿಮ್ಮಲ್ಲಿ ಯಾವುದೇ ಸಲಹೆಗಳಿವೆಯೇ?", placeholder: "ನಿಮ್ಮ ಸಲಹೆಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ..." },
+          end: { type: 'info', text: "ನಿಮ್ಮ ಅಮೂಲ್ಯವಾದ ಪ್ರತಿಕ್ರಿಯೆಗಾಗಿ ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ಸಲ್ಲಿಕೆ ಪೂರ್ಣಗೊಂಡಿದೆ. ✅" }
+        }
+      };
+      
+      const questionKeys = ['languageSelect', 'welcome', 'studentName', 'class', 'parentName', 'q_knowledge', 'q_clarity', 'q_overall', 'improve', 'end'];
+
+      const totalQuestions = questionKeys.filter(key => key !== 'info' && key !== 'welcome' && key !== 'languageSelect' && key !== 'end').length;
+
+      const addBubble = (text, type, delay = 0) => {
+        setTimeout(() => {
+          const bubble = document.createElement('div');
+          bubble.className = `chat-bubble bubble-${type}`;
+          bubble.textContent = text;
+          chatLog.appendChild(bubble);
+          chatLog.scrollTop = chatLog.scrollHeight;
+        }, delay);
+      };
+      
+      const showTypingIndicator = () => {
+        const indicator = document.createElement('div');
+        indicator.className = 'typing-indicator';
+        indicator.innerHTML = `<span></span><span></span><span></span>`;
+        chatLog.appendChild(indicator);
+        chatLog.scrollTop = chatLog.scrollHeight;
+        return indicator;
+      }
+
+      const processStep = () => {
+        if (currentStep >= questionKeys.length) return;
+        
+        const key = questionKeys[currentStep];
+
+        const indicator = showTypingIndicator();
+
+        setTimeout(() => {
+            chatLog.removeChild(indicator);
+            
+            if (key === 'languageSelect') {
+                addBubble('Please select your preferred language.', 'school');
+                renderLanguageSelection();
+                return;
+            }
+            
+            const stepData = translations[selectedLang][key];
+            addBubble(stepData.text, 'school');
+            
+            if (stepData.type === 'info') {
+                currentStep++;
+                setTimeout(processStep, 1000);
+                return;
+            }
+            
+            renderInput(stepData);
+        }, 1200);
+      };
+      
+      const renderLanguageSelection = () => {
+          inputArea.innerHTML = '';
+          const buttonsContainer = document.createElement('div');
+          buttonsContainer.className = 'choice-buttons';
+          
+          const languages = [
+              { code: 'en', name: 'English' },
+              { code: 'te', name: 'తెలుగు (Telugu)' },
+              { code: 'hi', name: 'हिन्दी (Hindi)' },
+              { code: 'kn', name: 'ಕನ್ನಡ (Kannada)' }
+          ];
+
+          languages.forEach(lang => {
+              const button = document.createElement('button');
+              button.className = 'choice-btn';
+              button.textContent = lang.name;
+              button.onclick = () => {
+                  selectedLang = lang.code;
+                  handleAnswer('language', lang.name);
+              };
+              buttonsContainer.appendChild(button);
+          });
+          inputArea.appendChild(buttonsContainer);
+      };
+
+      const renderInput = (stepData) => {
+        inputArea.innerHTML = '';
+        
+        if (stepData.type === 'text') {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-wrapper';
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+            input.placeholder = stepData.placeholder;
+            input.required = true;
+            
+            const button = document.createElement('button');
+            button.className = 'btn-send';
+            button.innerHTML = `<svg fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`;
+            
+            wrapper.appendChild(input);
+            wrapper.appendChild(button);
+            inputArea.appendChild(wrapper);
+            
+            input.focus();
+            
+            const submit = () => {
+                if (input.value.trim()) {
+                    handleAnswer(questionKeys[currentStep], input.value);
+                }
+            };
+            
+            button.onclick = submit;
+            input.onkeydown = (e) => { if (e.key === 'Enter') submit(); };
+
+        } else if (stepData.type === 'rating') {
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'choice-buttons';
+            stepData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-btn';
+                button.textContent = option;
+                button.onclick = () => {
+                    handleAnswer(questionKeys[currentStep], option, index + 1);
+                };
+                buttonsContainer.appendChild(button);
+            });
+            inputArea.appendChild(buttonsContainer);
+        }
+      };
+
+      const handleAnswer = (key, textValue, numericValue) => {
+          addBubble(textValue, 'user');
+          formData[key] = numericValue || textValue;
+          inputArea.innerHTML = '';
+          currentStep++;
+          
+          if (key !== 'language') {
+            const answeredQuestions = Object.keys(formData).filter(k => k !== 'language').length;
+            progressBar.style.width = `${(answeredQuestions / totalQuestions) * 100}%`;
+          }
+          
+          setTimeout(processStep, 500);
+      }
+
+      // Start the conversation
+      processStep();
+    });
+  </script>
+</body>
+</html>

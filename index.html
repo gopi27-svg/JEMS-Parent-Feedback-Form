@@ -319,7 +319,7 @@
 
         const en_nursery_g2 = {
             title: "Nursery to Grade 2",
-            description: {type: 'info', text: "This form is to collect parent feedback for improvement. Please answer honestly."},
+            description: {type: 'info', text: "This form is to collect parent feedback on teaching quality, coordination, discipline, and school leadership for improvement in the coming months. Please answer honestly."},
             s1_title: {type: 'info', text: "--- Student Details ---"}, s1_studentName: { type: 'text', text: "Student Name:", placeholder: "Type your answer..." }, s1_parentName: { type: 'text', text: "Parent Name:", placeholder: "Type your answer..." }, s1_mobile: { type: 'text', text: "Mobile Number:", placeholder: "Enter 10-digit number..." },
             s2_title: {type: 'info', text: "--- Class Teacher Evaluation ---"}, s2_clarity: { type: 'rating_1_5', text: "Teaching clarity and explanation" }, s2_progress: { type: 'rating_1_5', text: "Child’s learning progress" }, s2_punctuality: { type: 'rating_1_5', text: "Punctuality and classroom management" }, s2_attention: { type: 'rating_1_5', text: "Individual attention to your child" }, s2_correction: { type: 'rating_1_5', text: "Notebook/Homework correction quality" }, s2_discipline: { type: 'rating_1_5', text: "Behaviour and discipline handling" }, s2_friendly: { type: 'rating_1_5', text: "Friendliness and approachability" }, s2_comment: { type: 'text', text: "Any suggestions for the Class Teacher?", placeholder: "Type suggestions or 'none'" },
             s3_title: {type: 'info', text: "--- Subject Teaching ---"}, s3_english: { type: 'rating_1_5', text: "English Teacher" }, s3_math: { type: 'rating_1_5', text: "Mathematics Teacher" }, s3_evs: { type: 'rating_1_5', text: "EVS Teacher (Grades 1 & 2)" }, s3_rhymes: { type: 'rating_1_5', text: "Rhymes/Story/Alphabet (Nursery–UKG)" }, s3_telugu: { type: 'rating_1_5', text: "Telugu Language Teacher" }, s3_computer: { type: 'rating_1_5', text: "Computer Basics" }, s3_art: { type: 'rating_1_5', text: "Art & Craft Teacher" }, s3_pt: { type: 'rating_1_5', text: "PT/Sports Teacher" }, s3_music: { type: 'rating_1_5', text: "Music/Rhymes Teacher" }, s3_comment: { type: 'text', text: "Any specific subject feedback?", placeholder: "Type feedback or 'none'" },
@@ -455,8 +455,8 @@
           buttonsContainer.className = 'choice-buttons';
           
           const languages = [
-              { code: 'en', name: 'English' }, { code: 'te', name: 'తెలుగు' },
-              { code: 'hi', name: 'हिन्दी' }, { code: 'kn', name: 'ಕನ್ನಡ' }
+              { code: 'en', name: 'English' }, { code: 'te', name: 'తెలుగు Telugu' },
+              { code: 'hi', name: 'हिन्दी Hindi' }, { code: 'kn', name: 'ಕನ್ನಡ Kannada' }
           ];
 
           languages.forEach(lang => {

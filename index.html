@@ -297,14 +297,37 @@
       const progressBar = document.getElementById('progress-bar');
       const headerTitle = document.getElementById('header-title');
 
+      // --- YOUR WEB APP URL IS PASTED HERE ---
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwA49b7z34rzvNymK7WeikEy3ZD0ThKPH2peoQA4JdkOJMaSsp8txziD-jKgsLHXyWY/exec"; 
+
       let selectedLang = 'en';
       let currentFormType = 'nursery_g2';
       let questionQueue = [];
       const formData = {};
 
       const translations = {};
-
       let currentSectionId = 0;
+      
+      // --- THIS FUNCTION SENDS DATA TO GOOGLE SHEETS ---
+      const submitData = () => {
+        addBubble("Submitting your feedback, please wait...", "info", "submitting");
+        
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            addBubble("Sorry, there was an error submitting your form. Please try again later.", 'error', 'submit-error');
+        });
+      };
 
       // --- TRANSLATIONS DATABASE ---
       const setupTranslations = () => {
@@ -330,7 +353,6 @@
               kn: "ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ 10-ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ."
           }
         };
-
         const en_nursery_g2 = {
             title: "Nursery to Grade 2",
             description: {type: 'info', text: "This form is to collect parent feedback on teaching quality, coordination, discipline, and school leadership for improvement in the coming months. Please answer honestly."},
@@ -344,7 +366,6 @@
             s8_title: {type: 'info', text: "--- Overall Satisfaction ---"}, s8_satisfaction: { type: 'rating_1_10', text: "How satisfied are you with the school overall? (1=Low, 10=High)" }, s8_suggestion: { type: 'text', text: "Final Suggestion Box:", placeholder: "Type your suggestions..." },
             end: { type: 'info', text: "Thank you for your valuable feedback! Your submission is complete. ✅" }
         };
-
         const te_nursery_g2 = {
             title: "(నర్శరీ నుండి 2వ తరగతి)",
             description: {type: 'info', text: "రాబోయే నెలల్లో सुधार కోసం బోధన నాణ్యత, సమన్వయం, క్రమశిక్షణ, మరియు పాఠశాల నాయకత్వంపై తల్లిదండ్రుల అభిప్రాయాన్ని సేకరించడానికి ఈ ఫారం ఉద్దేశించబడింది. దయచేసి నిజాయితీగా సమాధానం ఇవ్వండి."},
@@ -358,7 +379,6 @@
             s8_title: {type: 'info', text: "--- మొత్తం సంతృప్తి ---"}, s8_satisfaction: { type: 'rating_1_10', text: "మొత్తంమీద మీరు పాఠశాలతో ఎంత సంతృప్తిగా ఉన్నారు? (1=తక్కువ, 10=అధిక)" }, s8_suggestion: { type: 'text', text: "చివరి సూచన పెట్టె:", placeholder: "మీ సూచనలను టైప్ చేయండి..." },
             end: { type: 'info', text: "మీ విలువైన అభిప్రాయానికి ధన్యవాదాలు! మీ సమర్పణ పూర్తయింది. ✅" }
         };
-
         const hi_nursery_g2 = {
             title: "(नर्सरी से कक्षा 2)",
             description: {type: 'info', text: "यह फॉर्म आगामी महीनों में सुधार के लिए शिक्षण गुणवत्ता, समन्वय, अनुशासन और स्कूल नेतृत्व पर अभिभावकों की प्रतिक्रिया एकत्र करने के लिए है। कृपया ईमानदारी से उत्तर दें।"},
@@ -372,7 +392,6 @@
             s8_title: {type: 'info', text: "--- समग्र संतुष्टि ---"}, s8_satisfaction: { type: 'rating_1_10', text: "आप कुल मिलाकर स्कूल से कितने संतुष्ट हैं? (1=कम, 10=अधिक)" }, s8_suggestion: { type: 'text', text: "अंतिम सुझाव बॉक्स:", placeholder: "अपने सुझाव टाइप करें..." },
             end: { type: 'info', text: "आपकी बहुमूल्य प्रतिक्रिया के लिए धन्यवाद! आपका सबमिशन पूरा हो गया है। ✅" }
         };
-
         const kn_nursery_g2 = {
             title: "(ನರ್ಸರಿಯಿಂದ 2 ನೇ ತರಗತಿ)",
             description: {type: 'info', text: "ಮುಂಬರುವ ತಿಂಗಳುಗಳಲ್ಲಿ ಸುಧಾರಣೆಗಾಗಿ ಬೋಧನಾ ಗುಣಮಟ್ಟ, ಸಮನ್ವಯ, ಶಿಸ್ತು ಮತ್ತು ಶಾಲಾ ನಾಯಕತ್ವದ ಕುರಿತು ಪೋಷಕರ ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಸಂಗ್ರಹಿಸಲು ಈ ಫಾರ್ಮ್ ಆಗಿದೆ. ದಯವಿಟ್ಟು ಪ್ರಾಮಾಣಿಕವಾಗಿ ಉತ್ತರಿಸಿ."},
@@ -380,18 +399,16 @@
             s2_title: {type: 'info', text: "--- ವರ್ಗ ಶಿಕ್ಷಕರ ಮೌಲ್ಯಮಾಪನ ---"}, s2_clarity: { type: 'rating_1_5', text: "ಬೋಧನೆಯ ಸ್ಪಷ್ಟತೆ ಮತ್ತು ವಿವರಣೆ" }, s2_progress: { type: 'rating_1_5', text: "ಮಗುವಿನ ಕಲಿಕೆಯ ಪ್ರಗತಿ" }, s2_punctuality: { type: 'rating_1_5', text: "ಸಮಯಪ್ರಜ್ಞೆ ಮತ್ತು ತರಗತಿ ನಿರ್ವಹಣೆ" }, s2_attention: { type: 'rating_1_5', text: "ನಿಮ್ಮ ಮಗುವಿಗೆ ವೈಯಕ್ತಿಕ ಗಮನ" }, s2_correction: { type: 'rating_1_5', text: "ನೋಟ್‌ಬುಕ್/ಮನೆಕೆಲಸ ತಿದ್ದುಪಡಿ ಗುಣಮಟ್ಟ" }, s2_discipline: { type: 'rating_1_5', text: "ನಡವಳಿಕೆ ಮತ್ತು ಶಿಸ್ತು ನಿರ್ವಹಣೆ" }, s2_friendly: { type: 'rating_1_5', text: "ಸ್ನೇಹಪರತೆ ಮತ್ತು ಸುಲಭವಾಗಿ ಸಂಪರ್ಕಿಸುವಿಕೆ" }, s2_comment: { type: 'text', text: "ವರ್ಗ ಶಿಕ್ಷಕರಿಗೆ ಯಾವುದೇ ಸಲಹೆಗಳಿವೆಯೇ?", placeholder: "ಸಲಹೆಗಳು ಅಥವಾ 'ಯಾವುದೂ ಇಲ್ಲ' ಎಂದು ಟೈಪ್ ಮಾಡಿ" },
             s3_title: {type: 'info', text: "--- ವಿಷಯ ಬೋಧನೆ ---"}, s3_english: { type: 'rating_1_5', text: "ಇಂಗ್ಲಿಷ್ ಶಿಕ್ಷಕರು" }, s3_math: { type: 'rating_1_5', text: "ಗಣಿತ ಶಿಕ್ಷಕರು" }, s3_evs: { type: 'rating_1_5', text: "EVS ಶಿಕ್ಷಕರು (1 ಮತ್ತು 2 ನೇ ತರಗತಿ)" }, s3_rhymes: { type: 'rating_1_5', text: "ಪದ್ಯ/ಕಥೆ/ಅಕ್ಷರಮಾಲೆ (ನರ್ಸರಿ–ಯುಕೆಜಿ)" }, s3_telugu: { type: 'rating_1_5', text: "ತೆಲುಗು ಭಾಷಾ ಶಿಕ್ಷಕರು" }, s3_computer: { type: 'rating_1_5', text: "ಕಂಪ್ಯೂಟರ್ ಬೇಸಿಕ್ಸ್" }, s3_art: { type: 'rating_1_5', text: "ಕಲೆ ಮತ್ತು ಕರಕುಶಲ ಶಿಕ್ಷಕರು" }, s3_pt: { type: 'rating_1_5', text: "ಪಿಟಿ/ಕ್ರೀಡಾ ಶಿಕ್ಷಕರು" }, s3_music: { type: 'rating_1_5', text: "ಸಂಗೀತ/ಪದ್ಯ ಶಿಕ್ಷಕರು" }, s3_comment: { type: 'text', text: "ಯಾವುದೇ ನಿರ್ದಿಷ್ಟ ವಿಷಯದ ಪ್ರತಿಕ್ರಿಯೆ ಇದೆಯೇ?", placeholder: "ಪ್ರತಿಕ್ರಿಯೆ ಅಥವಾ 'ಯಾವುದೂ ಇಲ್ಲ' ಎಂದು ಟೈಪ್ ಮಾಡಿ" },
             s4_title: {type: 'info', text: "--- ಸಂಯೋಜಕರ ಪ್ರತಿಕ್ರಿಯೆ ---"}, s4_response: { type: 'rating_1_5', text: "ಪೋಷಕರ ಕಳವಳಗಳಿಗೆ ಪ್ರತಿಕ್ರಿಯೆ" }, s4_observation: { type: 'rating_1_5', text: "ತರಗತಿ ವೀಕ್ಷಣೆ ಮತ್ತು ಮೇಲ್ವಿಚಾರಣೆ" }, s4_safety: { type: 'rating_1_5', text: "ವಿದ್ಯಾರ್ಥಿ ಸುರಕ್ಷತೆ ಮತ್ತು ನೈರ್ಮಲ್ಯ ಮೇಲ್ವಿಚಾರಣೆ" }, s4_improvement: { type: 'rating_1_5', text: "ಶೈಕ್ಷಣಿಕ ಮತ್ತು ಚಟುವಟಿಕೆಗಳಲ್ಲಿ ಸುಧಾರಣೆ" }, s4_discipline: { type: 'rating_1_5', text: "ನಡವಳಿಕೆ ಮತ್ತು ಶಿಸ್ತು ಅನುಸರಣೆ" }, s4_comment: { type: 'text', text: "ಸಂಯೋಜಕರಿಗೆ ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಇದೆಯೇ?", placeholder: "ಪ್ರತಿಕ್ರಿಯೆ ಅಥವಾ 'ಯಾವುದೂ ಇಲ್ಲ' ಎಂದು ಟೈಪ್ ಮಾಡಿ" },
-            s5_title: {type: 'info', text: "--- ಪ್ರಾಂಶುಪಾಲರ ಪ್ರತಿಕ್ರಿಯೆ ---"}, s5_discipline: { type: 'rating_1_5', text: "ಶಾಲಾ ಶಿಸ್ತು ನಿರ್ವಹಣೆ" }, s5_management: { type: 'rating_1_5', text: "ಒಟ್ಟಾರೆ ಶಾಲಾ ನಿರ್ವಹಣೆ" }, s5_communication: { type: 'rating_1_5', text: "ಪೋಷಕರೊಂದಿಗೆ ಸಂವಹನ" }, s5_safety: { type: 'rating_1_5', text: "ಮಗುವಿನ ಸುರಕ್ಷತಾ ವಾತಾವರಣ" }, s5_visibility: { type: 'rating_1_5', text: "ಶಾಲಾ ಚಟುವಟಿಕೆಗಳಲ್ಲಿ ಗೋಚರತೆ ಮತ್ತು ಉಪಸ್ಥಿತಿ" }, s5_comment: { type: 'text', text: "ಪ್ರಾಂಶುಪಾಲರಿಗೆ ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಇದೆಯೇ?", placeholder: "ಪ್ರತಿಕ್ರಿಯೆ ಅಥವಾ 'ಯಾವುದೂ ಇಲ್ಲ' ಎಂದು ಟೈಪ್ ಮಾಡಿ" },
+            s5_title: {type: 'info', text: "--- ಪ್ರಾಂಶುಪಾಲರ ಪ್ರತಿಕ್ರಿಯೆ ---"}, s5_discipline: { type: 'rating_1_5', text: "ಶಾಲಾ ಶಿಸ್ತು ನಿರ್ವಹಣೆ" }, s5_management: { type: 'rating_1_5', text: "ಒಟ್ಟಾರೆ ಶಾಲಾ ನಿರ್ವಹಣೆ" }, s5_communication: { type: 'rating_1_5', text: "ಪೋಷಕರೊಂದಿಗೆ ಸಂವಹನ" }, s5_safety: { type: 'rating_1_5', text: "ಮಗುವಿನ ಸುರಕ್ಷತಾ ವಾತావరణ" }, s5_visibility: { type: 'rating_1_5', text: "ಶಾಲಾ ಚಟುವಟಿಕೆಗಳಲ್ಲಿ ಗೋಚರತೆ ಮತ್ತು ಉಪಸ್ಥಿತಿ" }, s5_comment: { type: 'text', text: "ಪ್ರಾಂಶುಪಾಲರಿಗೆ ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಇದೆಯೇ?", placeholder: "ಪ್ರತಿಕ್ರಿಯೆ ಅಥವಾ 'ಯಾವುದೂ ಇಲ್ಲ' ಎಂದು ಟೈಪ್ ಮಾಡಿ" },
             s6_title: {type: 'info', text: "--- ಶಾಲಾ ಸೌಲಭ್ಯಗಳು ---"}, s6_cleanliness: { type: 'rating_1_5', text: "ಸ್ವಚ್ಛತೆ ಮತ್ತು ನೈರ್ಮಲ್ಯ" }, s6_classroom: { type: 'rating_1_5', text: "ತರಗತಿ ಪರಿಸರ" }, s6_water: { type: 'rating_1_5', text: "ಕುಡಿಯುವ ನೀರು ಮತ್ತು ಶೌಚಾಲಯಗಳು" }, s6_food: { type: 'rating_1_5', text: "ಶಾಲೆಯ ಆಹಾರ/ತಿಂಡಿಗಳ ಗುಣಮಟ್ಟ (ಅನ್ವಯಿಸಿದರೆ)" }, s6_play: { type: 'rating_1_5', text: "ಹೊರಾಂಗಣ ಆಟದ ಪ್ರದೇಶದ ಸುರಕ್ಷತೆ" },
             s7_title: {type: 'info', text: "--- ಸಂವಹನ ---"}, s7_diary: { type: 'rating_1_5', text: "ಡೈರಿ ಟಿಪ್ಪಣಿಗಳು ಮತ್ತು ಯೋಜನೆ" }, s7_meetings: { type: 'rating_1_5', text: "ಶಿಕ್ಷಕ-ಪೋಷಕರ ಸಭೆಗಳು" }, s7_circulars: { type: 'rating_1_5', text: "ಸಕಾಲಿಕ ಸುತ್ತೋಲೆಗಳು" }, s7_clarity: { type: 'rating_1_5', text: "ಸಂವಹನದ ಸ್ಪಷ್ಟತೆ" }, s7_comment: { type: 'text', text: "ಸಂವಹನದ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಇದೆಯೇ?", placeholder: "ಪ್ರತಿಕ್ರಿಯೆ ಅಥವಾ 'ಯಾವುದೂ ಇಲ್ಲ' ಎಂದು ಟೈಪ್ ಮಾಡಿ" },
             s8_title: {type: 'info', text: "--- ಒಟ್ಟಾರೆ ತೃಪ್ತಿ ---"}, s8_satisfaction: { type: 'rating_1_10', text: "ನೀವು ಒಟ್ಟಾರೆಯಾಗಿ ಶಾಲೆಯ ಬಗ್ಗೆ ಎಷ್ಟು ತೃಪ್ತರಾಗಿದ್ದೀರಿ? (1=ಕಡಿಮೆ, 10=ಹೆಚ್ಚು)" }, s8_suggestion: { type: 'text', text: "ಅಂತಿಮ ಸಲಹೆ ಪೆಟ್ಟಿಗೆ:", placeholder: "ನಿಮ್ಮ ಸಲಹೆಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ..." },
             end: { type: 'info', text: "ನಿಮ್ಮ ಅಮೂಲ್ಯವಾದ ಪ್ರತಿಕ್ರಿಯೆಗಾಗಿ ಧನ್ಯವಾದಗಳು! ನಿಮ್ಮ ಸಲ್ಲಿಕೆ ಪೂರ್ಣಗೊಂಡಿದೆ. ✅" }
         };
-
         translations.nursery_g2 = { en: en_nursery_g2, te: te_nursery_g2, hi: hi_nursery_g2, kn: kn_nursery_g2 };
       };
 
       const questionFlow_nursery_g2 = ['description', 's1_title', 's1_studentName', 's1_parentName', 's1_mobile', 's2_title', 's2_clarity', 's2_progress', 's2_punctuality', 's2_attention', 's2_correction', 's2_discipline', 's2_friendly', 's2_comment', 's3_title', 's3_english', 's3_math', 's3_evs', 's3_rhymes', 's3_telugu', 's3_computer', 's3_art', 's3_pt', 's3_music', 's3_comment', 's4_title', 's4_response', 's4_observation', 's4_safety', 's4_improvement', 's4_discipline', 's4_comment', 's5_title', 's5_discipline', 's5_management', 's5_communication', 's5_safety', 's5_visibility', 's5_comment', 's6_title', 's6_cleanliness', 's6_classroom', 's6_water', 's6_food', 's6_play', 's7_title', 's7_diary', 's7_meetings', 's7_circulars', 's7_clarity', 's7_comment', 's8_title', 's8_satisfaction', 's8_suggestion', 'end'];
-
 
       const addBubble = (text, type, key) => {
           const bubble = document.createElement('div');
@@ -544,39 +561,29 @@
             input.onkeydown = (e) => { if (e.key === 'Enter') submit(); };
 
         } else if (stepData.type === 'rating_1_5') {
-            // --- MODIFICATION START ---
             const buttonsContainer = document.createElement('div');
             buttonsContainer.className = 'rating-emoji-buttons';
             const emojis = translations.common.ratingEmojis;
-
             for(let i = 1; i <= 5; i++) {
-                // Create a wrapper for each emoji and its text
                 const itemWrapper = document.createElement('div');
                 itemWrapper.className = 'rating-item-wrapper';
-
                 const button = document.createElement('button');
                 button.className = 'rating-emoji-btn';
-                button.innerHTML = emojis[i]; // The emoji itself
-
+                button.innerHTML = emojis[i];
                 button.onclick = () => {
-                    // Add the 'selected' class for a brief visual flash
                     button.classList.add('selected');
-                    // Proceed to the next step after a short delay
                     setTimeout(() => {
                         handleAnswer(questionQueue[0], emojis[i], i);
                     }, 250);
                 };
-
                 const label = document.createElement('span');
                 label.className = 'rating-label';
                 label.textContent = translations.common.ratingTooltips[selectedLang][i];
-
                 itemWrapper.appendChild(button);
                 itemWrapper.appendChild(label);
                 buttonsContainer.appendChild(itemWrapper);
             }
             inputArea.appendChild(buttonsContainer);
-            // --- MODIFICATION END ---
         } else if (stepData.type === 'rating_1_10') {
              const buttonsContainer = document.createElement('div');
             buttonsContainer.className = 'choice-buttons';
@@ -599,6 +606,10 @@
           formData[key] = numericValue || textValue;
           inputArea.innerHTML = '';
           questionQueue.shift();
+
+          if (questionQueue.length > 0 && questionQueue[0] === 'end') {
+              submitData();
+          }
 
           if (key === 'class') {
             currentFormType = 'nursery_g2';
